@@ -159,7 +159,7 @@ is(ControllerState.idle) {
 
 ## Including Assumptions
 
-![Waveform](img/wave3.png)
+![Still Failed! Why is the active to rw counter counter???](img/wave3.png)
 
 Assumption created new counter-example: active to rw counter can be in the middle of counting
 
