@@ -2,6 +2,10 @@
 .slides {
     font-size: 0.75em;
 }
+.scrollable-slide {
+    height: 800px;
+    overflow-y: auto !important;
+}
 .reveal ul {
     display: block;
 }
