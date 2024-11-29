@@ -163,7 +163,9 @@ is(ControllerState.idle) {
 
 Assumption created new counter-example: active to rw counter can be in the middle of counting
 
-### Do we care about this?
+---
+
+### Another Assumption
 
 **assume property (@(posedge clock) disable iff (reset) (active_to_rw_counter_value == 0))**
 
