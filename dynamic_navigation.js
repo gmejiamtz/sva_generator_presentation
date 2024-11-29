@@ -1,22 +1,34 @@
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    // Get all top-level sections
-    const topLevelSlides = document.querySelectorAll('.slides > section');
+document.addEventListener("DOMContentLoaded", function () {
+  // Function to check for sub-slides
+  function hasSubSlides(slide) {
+    const subSlides = slide.querySelectorAll("section");
+    return subSlides.length > 0;
+  }
 
-    // Loop through each top-level section
-    topLevelSlides.forEach((slide) => {
-        const subSlides = slide.querySelectorAll('section');
-        
-        if (subSlides.length > 0) {
-            // Add data-visibility for sub-slide navigation
-            slide.setAttribute('data-visibility', 'vertical');
-        } else {
-            // Default horizontal navigation for slides without sub-slides
-            slide.setAttribute('data-visibility', 'horizontal');
-        }
-    });
+  // Function to toggle navigation arrows
+  function toggleNavigationArrows() {
+    const currentSlide = Reveal.getCurrentSlide();
 
-    // Optionally, log for debugging
-    console.log("Navigation dynamically adjusted based on slide levels.");
+    if (hasSubSlides(currentSlide)) {
+      // If the slide has sub-slides, show up/down arrows
+      document.querySelector(".reveal .navigate-left").style.display = "none";
+      document.querySelector(".reveal .navigate-right").style.display = "none";
+      document.querySelector(".reveal .navigate-up").style.display = "block";
+      document.querySelector(".reveal .navigate-down").style.display = "block";
+    } else {
+      // If the slide does not have sub-slides, show left/right arrows
+      document.querySelector(".reveal .navigate-left").style.display = "block";
+      document.querySelector(".reveal .navigate-right").style.display = "block";
+      document.querySelector(".reveal .navigate-up").style.display = "none";
+      document.querySelector(".reveal .navigate-down").style.display = "none";
+    }
+  }
+
+  // Listen for slide change events to dynamically update navigation arrows
+  Reveal.on("slidechanged", function (event) {
+    toggleNavigationArrows();
+  });
+
+  // Initial call to check the first slide
+  toggleNavigationArrows();
 });
-</script>
