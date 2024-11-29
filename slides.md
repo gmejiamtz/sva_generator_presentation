@@ -86,7 +86,7 @@ SDRAMController.sv
 
 ---
 
-## Constructing the first assertion
+## Constructing the first assertion {data-state="has-sub-slides"}
 
 - Take one of the provided specifications for the active state: Must transition to read or write state after the appropriate amount of cycles have passed
 - Below is how one would compose that into SVA
@@ -95,25 +95,25 @@ SDRAMController.sv
 
 ---
 
-## Running the first assert
+### Running the first assert
 
 ![Failed Proof](img/failed_proof.png)
 
 ---
 
-## Why the first assert failed
+### Why the first assert failed
 
 ![First Waveform - Just the State](img/wave1.png)
 
 ---
 
-## Why the first assert failed
+### Why the first assert failed in more detail
 
 ![Second Waveform - No Read or Write???](img/wave2.png)
 
 ---
 
-## Is my code wrong?
+### Is my code wrong?
 
 ```scala
 is(ControllerState.idle) {
@@ -148,7 +148,7 @@ is(ControllerState.idle) {
 
 ---
 
-## SystemVerilog assume keyword
+### SystemVerilog assume keyword
 
 - Used to reduce cone of influence of the design
 - Below is an example of an assume statement
@@ -157,7 +157,7 @@ is(ControllerState.idle) {
 
 ---
 
-## Including Assumptions
+### Including Assumptions
 
 ![Still Failed! Why is the active to rw counter counter???](img/wave3.png)
 
@@ -173,7 +173,7 @@ Assumption created new counter-example: active to rw counter can be in the middl
 
 ---
 
-## Final Assertions and their Assumptions
+## Final Assertions and their Assumptions {data-state="has-sub-slides"}
 
 ---
 

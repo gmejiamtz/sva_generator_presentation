@@ -124,10 +124,30 @@
   .date {
       font-size: 0.75em !important;
   }
+
   .reveal pre code {
+      counter-reset: line-number;
       white-space: pre-wrap; /* Allow breaking lines if needed */
       overflow-x: auto;     /* Add horizontal scrollbars */
       word-wrap: normal;    /* Prevent word breaking */
+  }
+  .reveal pre code span {
+      display: inline-block;
+      position: relative;
+      padding-left: 3em;
+      text-indent: -3em;
+  }
+
+  .reveal pre code span:before {
+      counter-increment: line-number;
+      content: counter(line-number);
+      position: absolute;
+      left: 0;
+      width: 2.5em;
+      text-align: right;
+      color: #888; /* Line number color */
+      padding-right: 0.5em;
+      user-select: none;
   }
   </style>
 </head>
@@ -275,8 +295,8 @@ SDRAMController.sv</code></pre>
 </section></section>
 <section>
 <section id="constructing-the-first-assertion"
-class="title-slide slide level2">
-<h2>Constructing the first assertion</h2>
+class="title-slide slide level2" data-state="has-sub-slides">
+<h2 data-state="has-sub-slides">Constructing the first assertion</h2>
 <ul>
 <li>Take one of the provided specifications for the active state: Must
 transition to read or write state after the appropriate amount of cycles
@@ -287,37 +307,24 @@ have passed</li>
 io_state_out == 3 |=&gt; ##5 (io_state_out == 6 | io_state_out== 7)
 )</strong></p>
 </section>
-<section class="slide level3">
-
-</section></section>
-<section>
-<section id="running-the-first-assert" class="title-slide slide level2">
-<h2>Running the first assert</h2>
+<section id="running-the-first-assert" class="slide level3">
+<h3>Running the first assert</h3>
 <figure>
 <img data-src="img/failed_proof.png" alt="Failed Proof" />
 <figcaption aria-hidden="true">Failed Proof</figcaption>
 </figure>
 </section>
-<section class="slide level3">
-
-</section></section>
-<section>
-<section id="why-the-first-assert-failed"
-class="title-slide slide level2">
-<h2>Why the first assert failed</h2>
+<section id="why-the-first-assert-failed" class="slide level3">
+<h3>Why the first assert failed</h3>
 <figure>
 <img data-src="img/wave1.png" alt="First Waveform - Just the State" />
 <figcaption aria-hidden="true">First Waveform - Just the
 State</figcaption>
 </figure>
 </section>
-<section class="slide level3">
-
-</section></section>
-<section>
-<section id="why-the-first-assert-failed-1"
-class="title-slide slide level2">
-<h2>Why the first assert failed</h2>
+<section id="why-the-first-assert-failed-in-more-detail"
+class="slide level3">
+<h3>Why the first assert failed in more detail</h3>
 <figure>
 <img data-src="img/wave2.png"
 alt="Second Waveform - No Read or Write???" />
@@ -325,12 +332,8 @@ alt="Second Waveform - No Read or Write???" />
 Write???</figcaption>
 </figure>
 </section>
-<section class="slide level3">
-
-</section></section>
-<section>
-<section id="is-my-code-wrong" class="title-slide slide level2">
-<h2>Is my code wrong?</h2>
+<section id="is-my-code-wrong" class="slide level3">
+<h3>Is my code wrong?</h3>
 <div class="sourceCode" id="cb2"><pre
 class="sourceCode scala"><code class="sourceCode scala"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">is</span><span class="op">(</span>ControllerState<span class="op">.</span>idle<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    state <span class="op">:=</span> ControllerState<span class="op">.</span>idle</span>
@@ -361,13 +364,8 @@ class="sourceCode scala"><code class="sourceCode scala"><span id="cb2-1"><a href
 <span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
 <span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </section>
-<section class="slide level3">
-
-</section></section>
-<section>
-<section id="systemverilog-assume-keyword"
-class="title-slide slide level2">
-<h2>SystemVerilog assume keyword</h2>
+<section id="systemverilog-assume-keyword" class="slide level3">
+<h3>SystemVerilog assume keyword</h3>
 <ul>
 <li>Used to reduce cone of influence of the design</li>
 <li>Below is an example of an assume statement</li>
@@ -375,12 +373,8 @@ class="title-slide slide level2">
 <p><strong>assume property (@(posedge clock) disable iff (reset)
 (started_read | started_write))</strong></p>
 </section>
-<section class="slide level3">
-
-</section></section>
-<section>
-<section id="including-assumptions" class="title-slide slide level2">
-<h2>Including Assumptions</h2>
+<section id="including-assumptions" class="slide level3">
+<h3>Including Assumptions</h3>
 <figure>
 <img data-src="img/wave3.png"
 alt="Still Failed! Why is the active to rw counter counter???" />
@@ -404,8 +398,9 @@ in the middle of counting</p>
 </section></section>
 <section>
 <section id="final-assertions-and-their-assumptions"
-class="title-slide slide level2">
-<h2>Final Assertions and their Assumptions</h2>
+class="title-slide slide level2" data-state="has-sub-slides">
+<h2 data-state="has-sub-slides">Final Assertions and their
+Assumptions</h2>
 
 </section>
 <section id="init-to-idle" class="slide level3">
