@@ -155,8 +155,6 @@ Assumption created new counter-example: active to rw counter can be in the middl
 
 ![Passed](img/proven.png)
 
----
-
 ## Final Assertions and their Assumptions {data-state="has-sub-slides"}
 
 ---
