@@ -25,24 +25,4 @@ figcaption {
 .date {
     font-size: 0.75em !important;
 }
-
-.reveal code {
-	font-family: monospace;
-}
-
-.reveal pre code {
-	padding: 5px;
-	overflow: auto;
-	max-height: 400px;
-	word-wrap: normal;
-}
-
-.reveal pre.stretch code {
-	height: 100%;
-	max-height: 100%;
-
-	-webkit-box-sizing: border-box;
-	   -moz-box-sizing: border-box;
-	        box-sizing: border-box;
-}
 </style>
