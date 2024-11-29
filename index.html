@@ -59,6 +59,184 @@
         text-align: center;
         margin: 0.5rem auto;
       }
+      /* CSS for syntax highlighting */
+      pre > code.sourceCode {
+        white-space: pre;
+        position: relative;
+      }
+      pre > code.sourceCode > span {
+        line-height: 1.25;
+      }
+      pre > code.sourceCode > span:empty {
+        height: 1.2em;
+      }
+      .sourceCode {
+        overflow: visible;
+      }
+      code.sourceCode > span {
+        color: inherit;
+        text-decoration: inherit;
+      }
+      div.sourceCode {
+        margin: 1em 0;
+      }
+      pre.sourceCode {
+        margin: 0;
+      }
+      @media screen {
+        div.sourceCode {
+          overflow: auto;
+        }
+      }
+      @media print {
+        pre > code.sourceCode {
+          white-space: pre-wrap;
+        }
+        pre > code.sourceCode > span {
+          display: inline-block;
+          text-indent: -5em;
+          padding-left: 5em;
+        }
+      }
+      pre.numberSource code {
+        counter-reset: source-line 0;
+      }
+      pre.numberSource code > span {
+        position: relative;
+        left: -4em;
+        counter-increment: source-line;
+      }
+      pre.numberSource code > span > a:first-child::before {
+        content: counter(source-line);
+        position: relative;
+        left: -1em;
+        text-align: right;
+        vertical-align: baseline;
+        border: none;
+        display: inline-block;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        padding: 0 4px;
+        width: 4em;
+        color: #aaaaaa;
+      }
+      pre.numberSource {
+        margin-left: 3em;
+        border-left: 1px solid #aaaaaa;
+        padding-left: 4px;
+      }
+      div.sourceCode {
+      }
+      @media screen {
+        pre > code.sourceCode > span > a:first-child::before {
+          text-decoration: underline;
+        }
+      }
+      code span.al {
+        color: #ff0000;
+        font-weight: bold;
+      } /* Alert */
+      code span.an {
+        color: #60a0b0;
+        font-weight: bold;
+        font-style: italic;
+      } /* Annotation */
+      code span.at {
+        color: #7d9029;
+      } /* Attribute */
+      code span.bn {
+        color: #40a070;
+      } /* BaseN */
+      code span.bu {
+        color: #008000;
+      } /* BuiltIn */
+      code span.cf {
+        color: #007020;
+        font-weight: bold;
+      } /* ControlFlow */
+      code span.ch {
+        color: #4070a0;
+      } /* Char */
+      code span.cn {
+        color: #880000;
+      } /* Constant */
+      code span.co {
+        color: #60a0b0;
+        font-style: italic;
+      } /* Comment */
+      code span.cv {
+        color: #60a0b0;
+        font-weight: bold;
+        font-style: italic;
+      } /* CommentVar */
+      code span.do {
+        color: #ba2121;
+        font-style: italic;
+      } /* Documentation */
+      code span.dt {
+        color: #902000;
+      } /* DataType */
+      code span.dv {
+        color: #40a070;
+      } /* DecVal */
+      code span.er {
+        color: #ff0000;
+        font-weight: bold;
+      } /* Error */
+      code span.ex {
+      } /* Extension */
+      code span.fl {
+        color: #40a070;
+      } /* Float */
+      code span.fu {
+        color: #06287e;
+      } /* Function */
+      code span.im {
+        color: #008000;
+        font-weight: bold;
+      } /* Import */
+      code span.in {
+        color: #60a0b0;
+        font-weight: bold;
+        font-style: italic;
+      } /* Information */
+      code span.kw {
+        color: #007020;
+        font-weight: bold;
+      } /* Keyword */
+      code span.op {
+        color: #666666;
+      } /* Operator */
+      code span.ot {
+        color: #007020;
+      } /* Other */
+      code span.pp {
+        color: #bc7a00;
+      } /* Preprocessor */
+      code span.sc {
+        color: #4070a0;
+      } /* SpecialChar */
+      code span.ss {
+        color: #bb6688;
+      } /* SpecialString */
+      code span.st {
+        color: #4070a0;
+      } /* String */
+      code span.va {
+        color: #19177c;
+      } /* Variable */
+      code span.vs {
+        color: #4070a0;
+      } /* VerbatimString */
+      code span.wa {
+        color: #60a0b0;
+        font-weight: bold;
+        font-style: italic;
+      } /* Warning */
     </style>
     <link
       rel="stylesheet"
@@ -148,7 +326,351 @@
             <figcaption aria-hidden="true">Finite State Machine</figcaption>
           </figure>
         </section>
-        <section class="slide level2"></section>
+        <section id="finite-state-machine-specification" class="slide level2">
+          <h2>Finite State Machine Specification</h2>
+          <ul>
+            <li>
+              Init State - Must stay here for 100 microseconds, can never return
+              here unless reset is asserted, must transition to idle state after
+              100 microseconds and 3 cycles
+            </li>
+            <li>
+              Idle State - Must transition to Active state if a read or write
+              request is asserted on the next cycle
+            </li>
+            <li>
+              Active State - Must transition to read or write state after the
+              appropriate amount of cycles have passed
+            </li>
+            <li>
+              Read State - Must assert read data valid after the appropriate
+              amount of cas latency cycles have passed, must transition back to
+              idle state after the appropriate amount of cas latency plus burst
+              length cycles have passed
+            </li>
+            <li>
+              Write State - Must transition to idle state after the appropriate
+              amount of burst length cycles have passed
+            </li>
+          </ul>
+        </section>
+        <section id="systemverilog-assertions" class="slide level2">
+          <h2>SystemVerilog Assertions</h2>
+          <ul>
+            <li>
+              An assertion is a statement about your design that you expect to
+              be true always. - Formal Verification, Erik Seligman et al.
+            </li>
+            <li>
+              Require formal verification tools to read - Yosys - SymbiYosys
+            </li>
+            <li>Used as targets for proofs rather than basic checks</li>
+            <li>
+              Two types: immediate and concurrent
+              <ul>
+                <li>
+                  Immediate - purely combinational logic, evaluated at any time
+                  step
+                </li>
+                <li>
+                  Concurrent - evaluated at specific points in time, allow for
+                  strings of events across time
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </section>
+        <section id="using-symbiyosys" class="slide level2">
+          <h2>Using SymbiYosys</h2>
+          <ul>
+            <li>Front-end for formal verification based off Yosys</li>
+            <li>Interface with different SMT solvers - picked yices2</li>
+            <li>
+              Displays counterexamples on a .vcd file to be opened with GTKWave
+            </li>
+            <li>.sby scripts can be used for automation</li>
+          </ul>
+        </section>
+        <section id="sby-script-example" class="slide level2">
+          <h2>.sby script example</h2>
+          <pre><code>[options]
+mode bmc
+depth 20
+
+[engines]
+smtbmc yices
+
+[script]
+read -formal SDRAMController.sv
+prep -top SDRAMController
+
+[files]
+SDRAMController.sv</code></pre>
+        </section>
+        <section id="constructing-the-first-assertion" class="slide level2">
+          <h2>Constructing the first assertion</h2>
+          <ul>
+            <li>
+              Take one of the provided specifications for the active state: Must
+              transition to read or write state after the appropriate amount of
+              cycles have passed
+            </li>
+            <li>Below is how one would compose that into SVA</li>
+          </ul>
+          <p>
+            <strong
+              >assert property (@(posedge clock) disable iff (reset)
+              io_state_out == 3 |=&gt; ##5 (io_state_out == 6 | io_state_out==
+              7) )</strong
+            >
+          </p>
+        </section>
+        <section id="running-the-first-assert" class="slide level2">
+          <h2>Running the first assert</h2>
+          <figure>
+            <img data-src="img/failed_proof.png" alt="Failed Proof" />
+            <figcaption aria-hidden="true">Failed Proof</figcaption>
+          </figure>
+        </section>
+        <section id="why-the-first-assert-failed" class="slide level2">
+          <h2>Why the first assert failed</h2>
+          <figure>
+            <img data-src="img/wave1.png" alt="Waveform" />
+            <figcaption aria-hidden="true">Waveform</figcaption>
+          </figure>
+        </section>
+        <section id="why-the-first-assert-failed-1" class="slide level2">
+          <h2>Why the first assert failed</h2>
+          <figure>
+            <img data-src="img/wave2.png" alt="Waveform" />
+            <figcaption aria-hidden="true">Waveform</figcaption>
+          </figure>
+        </section>
+        <section id="is-my-code-wrong" class="slide level2">
+          <h2>Is my code wrong?</h2>
+          <div class="sourceCode" id="cb2">
+            <pre
+              class="sourceCode scala"
+            ><code class="sourceCode scala"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">is</span><span class="op">(</span>ControllerState<span class="op">.</span>idle<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    state <span class="op">:=</span> ControllerState<span class="op">.</span>idle</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">//address holds row right now</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    read_state_counter<span class="op">.</span><span class="fu">reset</span><span class="op">()</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    write_state_counter<span class="op">.</span><span class="fu">reset</span><span class="op">()</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> go_to_active <span class="op">=</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    io<span class="op">.</span>read_start <span class="op">|</span> io<span class="op">.</span>write_start</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">//nop command</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    sdram_commands<span class="op">.</span><span class="fu">NOP</span><span class="op">()</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">//read and write isnt valid</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    io<span class="op">.</span>read_data_valid <span class="op">:=</span> <span class="kw">false</span><span class="op">.</span>B</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    io<span class="op">.</span>write_data_valid <span class="op">:=</span> <span class="kw">false</span><span class="op">.</span>B</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">when</span><span class="op">(</span>refresh_outstanding<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    sdram_commands<span class="op">.</span><span class="fu">Refresh</span><span class="op">()</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    refresh_outstanding <span class="op">:=</span> <span class="kw">false</span><span class="op">.</span>B</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">}.</span><span class="fu">elsewhen</span><span class="op">(</span>go_to_active<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    state <span class="op">:=</span> ControllerState<span class="op">.</span>active</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="co">//active command - make this a function</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> row_and_bank <span class="op">=</span> io<span class="op">.</span>read_row_address</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    sdram_commands<span class="op">.</span><span class="fu">Active</span><span class="op">(</span>row_and_bank<span class="op">)</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    cas_counter<span class="op">.</span><span class="fu">reset</span><span class="op">()</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">when</span><span class="op">(</span>io<span class="op">.</span>read_start<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>        started_read <span class="op">:=</span> <span class="kw">true</span><span class="op">.</span>B</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    <span class="op">}.</span><span class="fu">elsewhen</span><span class="op">(</span>io<span class="op">.</span>write_start<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>        started_write <span class="op">:=</span> <span class="kw">true</span><span class="op">.</span>B</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre>
+          </div>
+        </section>
+        <section id="systemverilog-assume-keyword" class="slide level2">
+          <h2>SystemVerilog assume keyword</h2>
+          <ul>
+            <li>Used to reduce cone of influence of the design</li>
+            <li>Below is an example of an assume statement</li>
+          </ul>
+          <p>
+            <strong
+              >assume property (@(posedge clock) disable iff (reset)
+              (started_read | started_write))</strong
+            >
+          </p>
+        </section>
+        <section id="including-assumptions-results" class="slide level2">
+          <h2>Including assumptions results</h2>
+          <figure>
+            <img data-src="img/wave3.png" alt="Waveform" />
+            <figcaption aria-hidden="true">Waveform</figcaption>
+          </figure>
+          <p>
+            Assumption created new counter-example: active to rw counter can be
+            in the middle of counting, we don’t care about this case at all thus
+            we need to tell the tools to ignore it:
+          </p>
+          <p>
+            <strong
+              >assume property (@(posedge clock) disable iff (reset)
+              (active_to_rw_counter_value == 0))</strong
+            >
+          </p>
+          <figure>
+            <img data-src="img/proven.png" alt="Passed" />
+            <figcaption aria-hidden="true">Passed</figcaption>
+          </figure>
+        </section>
+        <section
+          id="final-assertions-and-their-assumptions"
+          class="slide level2"
+        >
+          <h2>Final Assertions and their Assumptions</h2>
+          <div class="sourceCode" id="cb3">
+            <pre
+              class="sourceCode verilog"
+            ><code class="sourceCode verilog"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ot">`ifdef FORMAL</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="dv">init_to_idle:</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    assume property <span class="op">(@(</span><span class="kw">posedge</span> clock<span class="op">)</span> <span class="kw">disable</span> iff <span class="op">(</span>reset<span class="op">)</span> <span class="op">(</span>hundred_micro_sec_counter_value <span class="op">==</span> <span class="dv">12503</span><span class="op">));</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    assert property <span class="op">(@(</span><span class="kw">posedge</span> clock<span class="op">)</span> <span class="kw">disable</span> iff <span class="op">(</span>reset<span class="op">)</span> io_state_out <span class="op">==</span> <span class="dv">1</span> <span class="op">|=&gt;</span> io_state_out <span class="op">==</span> <span class="dv">2</span><span class="op">);</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="dv">idle_to_active:</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    assume property <span class="op">(@(</span><span class="kw">posedge</span> clock<span class="op">)</span> <span class="kw">disable</span> iff <span class="op">(</span>reset<span class="op">)</span> <span class="op">(~</span>refresh_outstanding<span class="op">));</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    assert property <span class="op">(@(</span><span class="kw">posedge</span> clock<span class="op">)</span> <span class="kw">disable</span> iff <span class="op">(</span>reset<span class="op">)</span> <span class="op">(</span>io_state_out <span class="op">==</span> <span class="dv">2</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">(</span>io_read_start <span class="op">|</span> io_write_start<span class="op">)</span> <span class="op">|=&gt;</span> io_state_out <span class="op">==</span> <span class="dv">3</span><span class="op">);</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="dv">active_to_rw:</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    assume property <span class="op">(@(</span><span class="kw">posedge</span> clock<span class="op">)</span> <span class="kw">disable</span> iff <span class="op">(</span>reset<span class="op">)</span> <span class="op">(</span>started_read <span class="op">|</span> started_write<span class="op">));</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    assume property <span class="op">(@(</span><span class="kw">posedge</span> clock<span class="op">)</span> <span class="kw">disable</span> iff <span class="op">(</span>reset<span class="op">)</span> <span class="op">(</span>cas_counter_value <span class="op">==</span> <span class="dv">0</span><span class="op">));</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    assume property <span class="op">(@(</span><span class="kw">posedge</span> clock<span class="op">)</span> <span class="kw">disable</span> iff <span class="op">(</span>reset<span class="op">)</span> <span class="op">(</span>active_to_rw_counter_value <span class="op">==</span> <span class="dv">0</span><span class="op">));</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    assert property <span class="op">(@(</span><span class="kw">posedge</span> clock<span class="op">)</span> <span class="kw">disable</span> iff <span class="op">(</span>reset<span class="op">)</span> <span class="op">(</span>io_state_out <span class="op">==</span> <span class="dv">3</span><span class="op">)</span> <span class="op">|-&gt;</span> #<span class="bn">#4</span> <span class="op">((</span>io_state_out <span class="op">==</span> <span class="dv">6</span><span class="op">)</span> <span class="op">|</span> <span class="op">(</span>io_state_out <span class="op">==</span> <span class="dv">7</span><span class="op">)));</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="dv">never_reaches_init_after_reset:</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    assume property <span class="op">(@(</span><span class="kw">posedge</span> clock<span class="op">)</span> <span class="kw">disable</span> iff <span class="op">(</span>reset<span class="op">)</span> <span class="op">(</span>io_state_out <span class="op">&gt;</span> <span class="dv">1</span><span class="op">));</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    assert property <span class="op">(@(</span><span class="kw">posedge</span> clock<span class="op">)</span> <span class="kw">disable</span> iff <span class="op">(</span>reset<span class="op">)</span> <span class="op">(</span>io_state_out <span class="op">!=</span> <span class="dv">1</span><span class="op">));</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="dv">read_to_valid_data:</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    assume property <span class="op">(@(</span><span class="kw">posedge</span> clock<span class="op">)</span> <span class="kw">disable</span> iff <span class="op">(</span>reset<span class="op">)</span> <span class="op">(</span>read_state_counter_value <span class="op">==</span> <span class="dv">0</span><span class="op">));</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    assert property <span class="op">(@(</span><span class="kw">posedge</span> clock<span class="op">)</span> <span class="kw">disable</span> iff <span class="op">(</span>reset<span class="op">)</span> <span class="op">(</span>io_state_out <span class="op">==</span> <span class="dv">6</span><span class="op">)</span> <span class="op">|=&gt;</span> #<span class="bn">#2</span> <span class="op">(</span>io_read_data_valid<span class="op">)</span> <span class="op">);</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="dv">read_to_idle:</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    assume property <span class="op">(@(</span><span class="kw">posedge</span> clock<span class="op">)</span> <span class="kw">disable</span> iff <span class="op">(</span>reset<span class="op">)</span> <span class="op">(</span>read_state_counter_value <span class="op">==</span> <span class="dv">0</span><span class="op">));</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    assert property <span class="op">(@(</span><span class="kw">posedge</span> clock<span class="op">)</span> <span class="kw">disable</span> iff <span class="op">(</span>reset<span class="op">)</span> <span class="op">(</span>io_state_out <span class="op">==</span> <span class="dv">6</span><span class="op">)</span> <span class="op">|=&gt;</span> #<span class="bn">#10</span> <span class="op">(</span>io_state_out <span class="op">==</span> <span class="dv">2</span><span class="op">)</span> <span class="op">);</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="dv">write_to_idle:</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    assume property <span class="op">(@(</span><span class="kw">posedge</span> clock<span class="op">)</span> <span class="kw">disable</span> iff <span class="op">(</span>reset<span class="op">)</span> <span class="op">(</span>write_state_counter_value <span class="op">==</span> <span class="dv">0</span><span class="op">));</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    assert property <span class="op">(@(</span><span class="kw">posedge</span> clock<span class="op">)</span> <span class="kw">disable</span> iff <span class="op">(</span>reset<span class="op">)</span> <span class="op">(</span>io_state_out <span class="op">==</span> <span class="dv">7</span><span class="op">)</span> <span class="op">|=&gt;</span> #<span class="bn">#8</span> <span class="op">(</span>io_state_out <span class="op">==</span> <span class="dv">2</span><span class="op">)</span> <span class="op">);</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="ot">`endif </span><span class="co">// FORMAL</span></span></code></pre>
+          </div>
+        </section>
+        <section id="how-sv-assertions-are-generated" class="slide level2">
+          <h2>How SV Assertions are Generated</h2>
+          <ul>
+            <li>
+              Given this program is a hardware generator, assertions must be
+              generated according to the provided parameters
+            </li>
+            <li>Created “SVA_Modifier” Scala package and class</li>
+            <li>
+              Takes in the same SDRAM Parameter Case used to define all
+              parameters for state machine generation
+            </li>
+            <li>Writes in SV assertions and assumptions with basic file IO</li>
+          </ul>
+        </section>
+        <section
+          id="init-to-idle-assertion-generator-example"
+          class="slide level2"
+        >
+          <h2>Init to Idle Assertion Generator Example</h2>
+          <div class="sourceCode" id="cb4">
+            <pre
+              class="sourceCode scala"
+            ><code class="sourceCode scala"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> <span class="fu">init_to_idle_assertion</span><span class="op">():</span> <span class="bu">Unit</span> <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> lines <span class="op">=</span> <span class="ex">Source</span><span class="op">.</span><span class="fu">fromFile</span><span class="op">(</span>filePath<span class="op">).</span><span class="fu">getLines</span><span class="op">().</span>toList</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> cycles_for_init_to_idle <span class="op">=</span> sdram_params<span class="op">.</span>cycles_for_100us <span class="op">+</span> <span class="dv">3</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> block_name <span class="op">=</span> <span class="st">&quot;init_to_idle:</span><span class="ch">\n</span><span class="st">&quot;</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> assumption1 <span class="op">=</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="ss">s&quot;</span><span class="ch">\t</span><span class="st">assume property (@(posedge clock) disable iff (reset) (hundred_micro_sec_counter_value == </span><span class="ss">$cycles_for_init_to_idle</span><span class="st">));</span><span class="ch">\n</span><span class="ss">&quot;</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> main_property <span class="op">=</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="ss">s&quot;</span><span class="ch">\t</span><span class="st">assert property (@(posedge clock) disable iff (reset) io_state_out == 1 |=&gt; io_state_out == 2);</span><span class="ch">\n</span><span class="ss">&quot;</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> assert_block <span class="op">=</span> block_name<span class="op">.</span><span class="fu">concat</span><span class="op">(</span>assumption1<span class="op">).</span><span class="fu">concat</span><span class="op">(</span>main_property<span class="op">)</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> updatedLines <span class="op">=</span> lines <span class="op">:+</span> assert_block</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>Files<span class="op">.</span><span class="fu">write</span><span class="op">(</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    Paths<span class="op">.</span><span class="fu">get</span><span class="op">(</span>filePath<span class="op">),</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    updatedLines<span class="op">.</span><span class="fu">mkString</span><span class="op">(</span><span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span><span class="op">).</span>getBytes<span class="op">,</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    StandardOpenOption<span class="op">.</span>TRUNCATE_EXISTING<span class="op">,</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    StandardOpenOption<span class="op">.</span>WRITE</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre>
+          </div>
+        </section>
+        <section id="main-program-sva-injection" class="slide level2">
+          <h2>Main Program SVA Injection</h2>
+          <div class="sourceCode" id="cb5">
+            <pre
+              class="sourceCode scala"
+            ><code class="sourceCode scala"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">new</span> <span class="ex">File</span><span class="op">(</span><span class="st">&quot;SDRAMController.v&quot;</span><span class="op">).</span><span class="fu">renameTo</span><span class="op">(</span><span class="kw">new</span> <span class="ex">File</span><span class="op">(</span>sdram_sv_name<span class="op">))</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> sva_mods <span class="op">=</span> <span class="kw">new</span> <span class="fu">SVA_Modifier</span><span class="op">(</span><span class="ss">s&quot;$curr_dir</span><span class="st">/</span><span class="ss">$sdram_sv_name&quot;</span><span class="op">,</span> params<span class="op">)</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>sva_mods<span class="op">.</span><span class="fu">begin_formal_block</span><span class="op">()</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>sva_mods<span class="op">.</span><span class="fu">init_to_idle_assertion</span><span class="op">()</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>sva_mods<span class="op">.</span><span class="fu">idle_to_active_assertion</span><span class="op">()</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>sva_mods<span class="op">.</span><span class="fu">active_to_rw_assertion</span><span class="op">()</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>sva_mods<span class="op">.</span><span class="fu">never_reaches_init_after_reset_assert</span><span class="op">()</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>sva_mods<span class="op">.</span><span class="fu">read_to_valid_data_assert</span><span class="op">()</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>sva_mods<span class="op">.</span><span class="fu">read_to_idle_assert</span><span class="op">()</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>sva_mods<span class="op">.</span><span class="fu">write_to_idle_assert</span><span class="op">()</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>sva_mods<span class="op">.</span><span class="fu">end_formal_block</span><span class="op">()</span></span></code></pre>
+          </div>
+        </section>
+        <section id="design-space-exploration-and-results" class="slide level2">
+          <h2>Design Space Exploration and Results</h2>
+          <ul>
+            <li>
+              Tested 8 different designs for ISSI IS42S81600 and Winbond
+              W9825G6KH SDRAM memories
+            </li>
+            <li>
+              Changed clock frequency (100 to 200MHz), CAS latency (2 and 3),
+              and burst lengths (1 to 8)
+            </li>
+            <li>
+              All assertions passed after cone of influence was correctly
+              refined by assume statements
+            </li>
+            <li>
+              Fixed bugs with read and write states not behaving according to
+              spec
+              <ul>
+                <li>
+                  Read exited at cas latency being reached, write would only
+                  write one item regardless of burst length
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </section>
+        <section id="challenges" class="slide level2">
+          <h2>Challenges</h2>
+          <ul>
+            <li>Lack of good documentation of the open source tools</li>
+            <li>
+              Open Source Tools - they’re awful, but they are free :D
+              <ul>
+                <li>
+                  Don’t support esoteric SystemVerilog features - mainly
+                  bi-directional ports
+                </li>
+              </ul>
+            </li>
+            <li>Licensing</li>
+            <li>Learning to read counter-examples</li>
+            <li>
+              Failing assertions doesn’t necessarily mean your specification is
+              wrong
+            </li>
+          </ul>
+        </section>
+        <section
+          id="calls-for-contributions-and-questions"
+          class="slide level2"
+        >
+          <h2>Calls for Contributions and Questions</h2>
+          <p>
+            <a href="https://github.com/gmejiamtz/sdram_controller_generator"
+              >https://github.com/gmejiamtz/sdram_controller_generator</a
+            >
+          </p>
+          <p>No tool installation required due to Github Codespaces!</p>
+        </section>
       </div>
     </div>
 
