@@ -15,26 +15,18 @@ date: December 9, 2024
 - Challenges
 - Future Work
 
----
-
 ## SDRAM Controller Generator Introduction
 
 - Uses Chisel/Scala to generate RTL to describe the behavior of a finite state machine to setup and index an SDRAM memory module
 - JSON files are inputted, representing SDRAM memory datasheets to include various timing parameters , into the Scala program
 
----
-
 ## DRAM Indexing
 
 ![DRAM Functional Block](img/dram_index.png)
 
----
-
 ## Finite State Machine Diagram
 
 ![Finite State Machine](img/fsm.png)
-
----
 
 ## Finite State Machine Specification
 
@@ -43,8 +35,6 @@ date: December 9, 2024
 - Active State - Must transition to read or write state after the appropriate amount of cycles have passed
 - Read State - Must assert read data valid after the appropriate amount of cas latency cycles have passed, must transition back to idle state after the appropriate amount of cas latency plus burst length cycles have passed
 - Write State - Must transition to idle state after the appropriate amount of burst length cycles have passed
-
----
 
 ## SystemVerilog Assertions
 
@@ -64,8 +54,6 @@ date: December 9, 2024
 - Displays counterexamples on a .vcd file to be opened with GTKWave
 - .sby scripts can be used for automation
 
----
-
 ## .sby script example
 
 ```
@@ -83,8 +71,6 @@ prep -top SDRAMController
 [files]
 SDRAMController.sv
 ```
-
----
 
 ## Constructing the first assertion {data-state="has-sub-slides"}
 
@@ -248,16 +234,12 @@ write_to_idle:
 `endif // FORMAL
 ```
 
----
-
 ## How SV Assertions are Generated
 
 - Given this program is a hardware generator, assertions must be generated according to the provided parameters
 - Created “SVA_Modifier” Scala package and class
 - Takes in the same SDRAM Parameter Case used to define all parameters for state machine generation
 - Writes in SV assertions and assumptions with basic file IO
-
----
 
 ## Init to Idle Assertion Generator Example
 
@@ -281,8 +263,6 @@ Files.write(
 }
 ```
 
----
-
 ## Main Program SVA Injection
 
 ```scala
@@ -299,8 +279,6 @@ sva_mods.write_to_idle_assert()
 sva_mods.end_formal_block()
 ```
 
----
-
 ## Design Space Exploration and Results
 
 - Tested 8 different designs for ISSI IS42S81600 and Winbond W9825G6KH SDRAM memories
@@ -308,8 +286,6 @@ sva_mods.end_formal_block()
 - All assertions passed after cone of influence was correctly refined by assume statements
 - Fixed bugs with read and write states not behaving according to spec
   - Read exited at cas latency being reached, write would only write one item regardless of burst length
-
----
 
 ## Challenges
 
@@ -319,8 +295,6 @@ sva_mods.end_formal_block()
 - Licensing
 - Learning to read counter-examples
 - Failing assertions doesn’t necessarily mean your specification is wrong
-
----
 
 ## Calls for Contributions and Questions
 

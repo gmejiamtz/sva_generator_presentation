@@ -144,7 +144,6 @@ Generator</p>
   <p class="date">December 9, 2024</p>
 </section>
 
-<section>
 <section id="layout-of-presentation" class="title-slide slide level2">
 <h2>Layout of Presentation</h2>
 <ul>
@@ -157,10 +156,7 @@ Generator</p>
 <li>Future Work</li>
 </ul>
 </section>
-<section class="slide level3">
 
-</section></section>
-<section>
 <section id="sdram-controller-generator-introduction"
 class="title-slide slide level2">
 <h2>SDRAM Controller Generator Introduction</h2>
@@ -171,10 +167,7 @@ finite state machine to setup and index an SDRAM memory module</li>
 include various timing parameters , into the Scala program</li>
 </ul>
 </section>
-<section class="slide level3">
 
-</section></section>
-<section>
 <section id="dram-indexing" class="title-slide slide level2">
 <h2>DRAM Indexing</h2>
 <figure>
@@ -182,10 +175,7 @@ include various timing parameters , into the Scala program</li>
 <figcaption aria-hidden="true">DRAM Functional Block</figcaption>
 </figure>
 </section>
-<section class="slide level3">
 
-</section></section>
-<section>
 <section id="finite-state-machine-diagram"
 class="title-slide slide level2">
 <h2>Finite State Machine Diagram</h2>
@@ -194,10 +184,7 @@ class="title-slide slide level2">
 <figcaption aria-hidden="true">Finite State Machine</figcaption>
 </figure>
 </section>
-<section class="slide level3">
 
-</section></section>
-<section>
 <section id="finite-state-machine-specification"
 class="title-slide slide level2">
 <h2>Finite State Machine Specification</h2>
@@ -217,9 +204,7 @@ cycles have passed</li>
 amount of burst length cycles have passed</li>
 </ul>
 </section>
-<section class="slide level3">
 
-</section></section>
 <section>
 <section id="systemverilog-assertions" class="title-slide slide level2">
 <h2>SystemVerilog Assertions</h2>
@@ -240,7 +225,6 @@ of events across time</li>
 <section class="slide level3">
 
 </section></section>
-<section>
 <section id="using-symbiyosys" class="title-slide slide level2">
 <h2>Using SymbiYosys</h2>
 <ul>
@@ -251,10 +235,7 @@ GTKWave</li>
 <li>.sby scripts can be used for automation</li>
 </ul>
 </section>
-<section class="slide level3">
 
-</section></section>
-<section>
 <section id="sby-script-example" class="title-slide slide level2">
 <h2>.sby script example</h2>
 <pre><code>[options]
@@ -271,9 +252,7 @@ prep -top SDRAMController
 [files]
 SDRAMController.sv</code></pre>
 </section>
-<section class="slide level3">
 
-</section></section>
 <section>
 <section id="constructing-the-first-assertion"
 class="title-slide slide level2" data-state="has-sub-slides">
@@ -435,11 +414,7 @@ class="sourceCode verilog"><code class="sourceCode verilog"><span id="cb9-1"><a 
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    assume property <span class="op">(@(</span><span class="kw">posedge</span> clock<span class="op">)</span> <span class="kw">disable</span> iff <span class="op">(</span>reset<span class="op">)</span> <span class="op">(</span>write_state_counter_value <span class="op">==</span> <span class="dv">0</span><span class="op">));</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    assert property <span class="op">(@(</span><span class="kw">posedge</span> clock<span class="op">)</span> <span class="kw">disable</span> iff <span class="op">(</span>reset<span class="op">)</span> <span class="op">(</span>io_state_out <span class="op">==</span> <span class="dv">7</span><span class="op">)</span> <span class="op">|=&gt;</span> #<span class="bn">#8</span> <span class="op">(</span>io_state_out <span class="op">==</span> <span class="dv">2</span><span class="op">)</span> <span class="op">);</span></span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="ot">`endif </span><span class="co">// FORMAL</span></span></code></pre></div>
-</section>
-<section class="slide level3">
-
 </section></section>
-<section>
 <section id="how-sv-assertions-are-generated"
 class="title-slide slide level2">
 <h2>How SV Assertions are Generated</h2>
@@ -452,10 +427,7 @@ for state machine generation</li>
 <li>Writes in SV assertions and assumptions with basic file IO</li>
 </ul>
 </section>
-<section class="slide level3">
 
-</section></section>
-<section>
 <section id="init-to-idle-assertion-generator-example"
 class="title-slide slide level2">
 <h2>Init to Idle Assertion Generator Example</h2>
@@ -478,10 +450,7 @@ class="sourceCode scala"><code class="sourceCode scala"><span id="cb10-1"><a hre
 <span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
 <span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </section>
-<section class="slide level3">
 
-</section></section>
-<section>
 <section id="main-program-sva-injection"
 class="title-slide slide level2">
 <h2>Main Program SVA Injection</h2>
@@ -498,10 +467,7 @@ class="sourceCode scala"><code class="sourceCode scala"><span id="cb11-1"><a hre
 <span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>sva_mods<span class="op">.</span><span class="fu">write_to_idle_assert</span><span class="op">()</span></span>
 <span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>sva_mods<span class="op">.</span><span class="fu">end_formal_block</span><span class="op">()</span></span></code></pre></div>
 </section>
-<section class="slide level3">
 
-</section></section>
-<section>
 <section id="design-space-exploration-and-results"
 class="title-slide slide level2">
 <h2>Design Space Exploration and Results</h2>
@@ -519,10 +485,7 @@ item regardless of burst length</li>
 </ul></li>
 </ul>
 </section>
-<section class="slide level3">
 
-</section></section>
-<section>
 <section id="challenges" class="title-slide slide level2">
 <h2>Challenges</h2>
 <ul>
@@ -538,9 +501,7 @@ bi-directional ports</li>
 wrong</li>
 </ul>
 </section>
-<section class="slide level3">
 
-</section></section>
 <section id="calls-for-contributions-and-questions"
 class="title-slide slide level2">
 <h2>Calls for Contributions and Questions</h2>
