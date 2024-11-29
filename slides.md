@@ -45,8 +45,6 @@ date: December 9, 2024
   - Immediate - purely combinational logic, evaluated at any time step
   - Concurrent - evaluated at specific points in time, allow for strings of events across time
 
----
-
 ## Using SymbiYosys
 
 - Front-end for formal verification based off Yosys
