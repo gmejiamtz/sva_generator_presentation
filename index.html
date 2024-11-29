@@ -98,7 +98,7 @@
   <link rel="stylesheet" href="https://unpkg.com/reveal.js//dist/theme/black.css" id="theme">
   <style>
   .slides {
-      font-size: 0.75em;
+      font-size: 0.50em;
   }
   .reveal ul {
       display: block;
@@ -318,7 +318,10 @@ class="sourceCode scala"><code class="sourceCode scala"><span id="cb2-1"><a href
 </figure>
 <p>Assumption created new counter-example: active to rw counter can be
 in the middle of counting</p>
-<h3 id="do-we-care-about-this">Do we care about this?</h3>
+</section>
+<section class="slide level2">
+
+<h3 id="another-assumption">Another Assumption</h3>
 <p><strong>assume property (@(posedge clock) disable iff (reset)
 (active_to_rw_counter_value == 0))</strong></p>
 <figure>
