@@ -3,9 +3,9 @@
   <head>
     <meta charset="utf-8" />
     <meta name="generator" content="pandoc" />
-    <meta name="author" content="Jonathan Soma" />
-    <meta name="dcterms.date" content="2021-01-19" />
-    <title>Two Deep Learning Papers</title>
+    <meta name="author" content="Gary Mejia" />
+    <meta name="dcterms.date" content="2024-12-09" />
+    <title>SVA Generator</title>
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta
       name="apple-mobile-web-app-status-bar-style"
@@ -98,70 +98,60 @@
     <div class="reveal">
       <div class="slides">
         <section id="title-slide">
-          <h1 class="title">Two Deep Learning Papers</h1>
+          <h1 class="title">SVA Generator</h1>
           <p class="subtitle">
-            Robustness and Security in ML Systems, Spring 2021
+            Formal Verification for SDRAM Controller Generator
           </p>
-          <p class="author">Jonathan Soma</p>
-          <p class="date">January 19, 2021</p>
+          <p class="author">Gary Mejia</p>
+          <p class="date">December 9, 2024</p>
         </section>
 
+        <section id="layout-of-presentation" class="slide level2">
+          <h2>Layout of Presentation</h2>
+          <ul>
+            <li>SDRAM Controller Generator Introduction</li>
+            <li>Finite State Machine Internals and Specification</li>
+            <li>SystemVerilog Assertions</li>
+            <li>SystemVerilog Assertion Generation</li>
+            <li>Results</li>
+            <li>Challenges</li>
+            <li>Future Work</li>
+          </ul>
+        </section>
         <section
-          id="handwritten-digit-recognition-with-a-back-propagation-network-1990"
+          id="sdram-controller-generator-introduction"
           class="slide level2"
         >
-          <h2>
-            Handwritten Digit Recognition with a Back-Propagation Network, 1990
-          </h2>
-          <p>
-            Y. Le Cun, B. Boser, J. S. Denker, D. Henderson, R. E. Howard, W.
-            Hubbard, and L. D. Jackel
-          </p>
-          <p>a.k.a. LeCun90c</p>
+          <h2>SDRAM Controller Generator Introduction</h2>
+          <ul>
+            <li>
+              Uses Chisel/Scala to generate RTL to describe the behavior of a
+              finite state machine to setup and index an SDRAM memory module
+            </li>
+            <li>
+              JSON files are inputted, representing SDRAM memory datasheets to
+              include various timing parameters , into the Scala program
+            </li>
+          </ul>
         </section>
-        <section id="yann-lecun" class="slide level2">
-          <h2>Yann LeCun</h2>
-          <figure>
-            <img data-src="images/lecun.png" alt="Yann LeCun on Wikipedia" />
-            <figcaption aria-hidden="true">Yann LeCun on Wikipedia</figcaption>
-          </figure>
-          <p>
-            Chief AI Scientist (and several other titles) at Facebook, “founding
-            father of convolutional nets.”
-          </p>
-        </section>
-        <section id="yann-le-cun-vs.-yann-lecun" class="slide level2">
-          <h2>Yann Le Cun vs. Yann LeCun</h2>
-          <blockquote>
-            <p>
-              All kinds of badly programmed computers thought that “Le” was my
-              middle name. Even the science citation index knew me as “Y. L.
-              Cun”, which is one of the reasons I now spell my name “LeCun”.
-            </p>
-            <p>
-              From Yann’s
-              <a href="http://yann.lecun.com/ex/fun/">Fun Stuff</a> page
-            </p>
-            <p>
-              Also:
-              <a
-                href="https://www.kalzumeus.com/2010/06/17/falsehoods-programmers-believe-about-names/"
-                >Falsehoods Programmers Believe About Names</a
-              >
-            </p>
-          </blockquote>
-        </section>
-        <section class="slide level2">
-          <h3 id="the-problem">The Problem</h3>
-          <p>How to turn handwritten ZIP codes from envelopes into numbers</p>
+        <section id="dram-indexing" class="slide level2">
+          <h2>DRAM Indexing</h2>
           <figure>
             <img
-              data-src="images/original.png"
-              alt="Examples of original zipcodes from the testing set"
+              data-src="%22DRAM%20Functional%20Block%22"
+              alt="img/dram_index"
             />
-            <figcaption aria-hidden="true">
-              Examples of original zipcodes from the testing set
-            </figcaption>
+            <figcaption aria-hidden="true">img/dram_index</figcaption>
+          </figure>
+        </section>
+        <section id="finite-state-machine-diagram" class="slide level2">
+          <h2>Finite State Machine Diagram</h2>
+          <figure>
+            <img
+              data-src="%22DRAM%20Functional%20Block%22"
+              alt="img/dram_index"
+            />
+            <figcaption aria-hidden="true">img/dram_index</figcaption>
           </figure>
         </section>
         <section class="slide level2"></section>
