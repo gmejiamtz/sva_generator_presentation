@@ -17,18 +17,26 @@ date: December 9, 2024
 
 ## SDRAM Controller Generator Introduction
 
+### Overview
+
 - Uses Chisel/Scala to generate RTL to describe the behavior of a finite state machine to setup and index an SDRAM memory module
 - JSON files are inputted, representing SDRAM memory datasheets to include various timing parameters , into the Scala program
 
-## DRAM Indexing
+---
+
+### DRAM Indexing
 
 ![DRAM Functional Block](img/dram_index.png)
 
-## Finite State Machine Diagram
+---
+
+### Finite State Machine Diagram
 
 ![Finite State Machine](img/fsm.png)
 
-## Finite State Machine Specification
+---
+
+### Finite State Machine Specification
 
 - Init State - Must stay here for 100 microseconds, can never return here unless reset is asserted, must transition to idle state after 100 microseconds and 3 cycles
 - Idle State - Must transition to Active state if a read or write request is asserted on the next cycle
@@ -38,6 +46,8 @@ date: December 9, 2024
 
 ## SystemVerilog Assertions
 
+### What is SVA
+
 - An assertion is a statement about your design that you expect to be true always. - Formal Verification, Erik Seligman et al.
 - Require formal verification tools to read - Yosys - SymbiYosys
 - Used as targets for proofs rather than basic checks
@@ -45,14 +55,18 @@ date: December 9, 2024
   - Immediate - purely combinational logic, evaluated at any time step
   - Concurrent - evaluated at specific points in time, allow for strings of events across time
 
-## Using SymbiYosys
+---
+
+### SymbiYosys
 
 - Front-end for formal verification based off Yosys
 - Interface with different SMT solvers - picked yices2
 - Displays counterexamples on a .vcd file to be opened with GTKWave
 - .sby scripts can be used for automation
 
-## .sby script example
+---
+
+### .sby script example
 
 ```
 [options]
@@ -70,7 +84,9 @@ prep -top SDRAMController
 SDRAMController.sv
 ```
 
-## Constructing the first assertion {data-state="has-sub-slides"}
+## Contructing Assertions
+
+### Active to Read or Write Example
 
 - Take one of the provided specifications for the active state: Must transition to read or write state after the appropriate amount of cycles have passed
 - Below is how one would compose that into SVA
@@ -230,14 +246,18 @@ write_to_idle:
 `endif // FORMAL
 ```
 
-## How SV Assertions are Generated
+## SV Assertion Generation
+
+### SystemVerilog Assertion Modifier Class
 
 - Given this program is a hardware generator, assertions must be generated according to the provided parameters
 - Created “SVA_Modifier” Scala package and class
 - Takes in the same SDRAM Parameter Case used to define all parameters for state machine generation
 - Writes in SV assertions and assumptions with basic file IO
 
-## Init to Idle Assertion Generator Example
+---
+
+### Init to Idle Assertion Generator Example
 
 ```scala
 def init_to_idle_assertion(): Unit = {
@@ -259,7 +279,9 @@ Files.write(
 }
 ```
 
-## Main Program SVA Injection
+---
+
+### Main Program SVA Injection
 
 ```scala
 new File("SDRAMController.v").renameTo(new File(sdram_sv_name))
@@ -275,7 +297,9 @@ sva_mods.write_to_idle_assert()
 sva_mods.end_formal_block()
 ```
 
-## Design Space Exploration and Results
+## Results and Challenges
+
+### Design Space Exploration
 
 - Tested 8 different designs for ISSI IS42S81600 and Winbond W9825G6KH SDRAM memories
 - Changed clock frequency (100 to 200MHz), CAS latency (2 and 3), and burst lengths (1 to 8)
@@ -283,7 +307,9 @@ sva_mods.end_formal_block()
 - Fixed bugs with read and write states not behaving according to spec
   - Read exited at cas latency being reached, write would only write one item regardless of burst length
 
-## Challenges
+---
+
+### Challenges
 
 - Lack of good documentation of the open source tools
 - Open Source Tools - they’re awful, but they are free :D
