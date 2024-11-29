@@ -103,13 +103,13 @@ SDRAMController.sv
 
 ## Why the first assert failed
 
-![Waveform](img/wave1.png)
+![First Waveform - Just the State](img/wave1.png)
 
 ---
 
 ## Why the first assert failed
 
-![Waveform](img/wave2.png)
+![Second Waveform - No Read or Write???](img/wave2.png)
 
 ---
 
@@ -157,13 +157,13 @@ is(ControllerState.idle) {
 
 ---
 
-## Including assumptions results
-
-{: .scrollable }
+## Including Assumptions
 
 ![Waveform](img/wave3.png)
 
-Assumption created new counter-example: active to rw counter can be in the middle of counting, we don't care about this case at all thus we need to tell the tools to ignore it:
+Assumption created new counter-example: active to rw counter can be in the middle of counting
+
+### Do we care about this?
 
 **assume property (@(posedge clock) disable iff (reset) (active_to_rw_counter_value == 0))**
 
@@ -173,30 +173,73 @@ Assumption created new counter-example: active to rw counter can be in the middl
 
 ## Final Assertions and their Assumptions
 
-{: .scrollable }
+---
+
+### Init to Idle
 
 ```verilog
-`ifdef FORMAL
 init_to_idle:
 	assume property (@(posedge clock) disable iff (reset) (hundred_micro_sec_counter_value == 12503));
 	assert property (@(posedge clock) disable iff (reset) io_state_out == 1 |=> io_state_out == 2);
+```
+
+---
+
+### Idle to Active
+
+```verilog
 idle_to_active:
 	assume property (@(posedge clock) disable iff (reset) (~refresh_outstanding));
 	assert property (@(posedge clock) disable iff (reset) (io_state_out == 2) & (io_read_start | io_write_start) |=> io_state_out == 3);
+```
+
+---
+
+### Active to Read or Write
+
+```verilog
 active_to_rw:
 	assume property (@(posedge clock) disable iff (reset) (started_read | started_write));
 	assume property (@(posedge clock) disable iff (reset) (cas_counter_value == 0));
 	assume property (@(posedge clock) disable iff (reset) (active_to_rw_counter_value == 0));
 	assert property (@(posedge clock) disable iff (reset) (io_state_out == 3) |-> ##4 ((io_state_out == 6) | (io_state_out == 7)));
+```
+
+---
+
+### Never Reaches Init after Reset
+
+```verilog
 never_reaches_init_after_reset:
 	assume property (@(posedge clock) disable iff (reset) (io_state_out > 1));
 	assert property (@(posedge clock) disable iff (reset) (io_state_out != 1));
+```
+
+---
+
+### Read to Valid Data
+
+```verilog
 read_to_valid_data:
 	assume property (@(posedge clock) disable iff (reset) (read_state_counter_value == 0));
 	assert property (@(posedge clock) disable iff (reset) (io_state_out == 6) |=> ##2 (io_read_data_valid) );
+```
+
+---
+
+### Read to Idle
+
+```verilog
 read_to_idle:
 	assume property (@(posedge clock) disable iff (reset) (read_state_counter_value == 0));
 	assert property (@(posedge clock) disable iff (reset) (io_state_out == 6) |=> ##10 (io_state_out == 2) );
+```
+
+---
+
+### Write to Idle
+
+```verilog
 write_to_idle:
 	assume property (@(posedge clock) disable iff (reset) (write_state_counter_value == 0));
 	assert property (@(posedge clock) disable iff (reset) (io_state_out == 7) |=> ##8 (io_state_out == 2) );
