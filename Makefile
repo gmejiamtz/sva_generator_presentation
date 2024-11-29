@@ -1,7 +1,8 @@
 index.html: slides.md
 	pandoc -t revealjs -s -o $@ $< \
 	-V revealjs-url=https://unpkg.com/reveal.js/ \
-	--include-in-header=slides.css -V theme=black 
+	--include-in-header=slides.css -V theme=black \
+	--slide-level 2
 
 clean:
 	rm index.html
