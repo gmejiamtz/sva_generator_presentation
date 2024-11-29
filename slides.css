@@ -28,27 +28,8 @@ figcaption {
 }
 
 .reveal pre code {
-    counter-reset: line-number;
     white-space: pre-wrap; /* Allow breaking lines if needed */
     overflow-x: auto;     /* Add horizontal scrollbars */
     word-wrap: normal;    /* Prevent word breaking */
-}
-.reveal pre code span {
-    display: inline-block;
-    position: relative;
-    padding-left: 3em;
-    text-indent: -3em;
-}
-
-.reveal pre code span:before {
-    counter-increment: line-number;
-    content: counter(line-number);
-    position: absolute;
-    left: 0;
-    width: 2.5em;
-    text-align: right;
-    color: #888; /* Line number color */
-    padding-right: 0.5em;
-    user-select: none;
 }
 </style>
