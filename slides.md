@@ -159,6 +159,8 @@ is(ControllerState.idle) {
 
 ## Including assumptions results
 
+{: .scrollable }
+
 ![Waveform](img/wave3.png)
 
 Assumption created new counter-example: active to rw counter can be in the middle of counting, we don't care about this case at all thus we need to tell the tools to ignore it:
@@ -170,6 +172,8 @@ Assumption created new counter-example: active to rw counter can be in the middl
 ---
 
 ## Final Assertions and their Assumptions
+
+{: .scrollable }
 
 ```verilog
 `ifdef FORMAL
