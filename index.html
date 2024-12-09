@@ -252,8 +252,8 @@ prep -top SDRAMController
 SDRAMController.sv</code></pre>
 </section></section>
 <section>
-<section id="contructing-assertions" class="title-slide slide level2">
-<h2>Contructing Assertions</h2>
+<section id="constructing-assertions" class="title-slide slide level2">
+<h2>Constructing Assertions</h2>
 
 </section>
 <section id="active-to-read-or-write-example" class="slide level3">
@@ -297,33 +297,29 @@ Write???</figcaption>
 <h3>Is my code wrong?</h3>
 <div class="sourceCode" id="cb2"><pre
 class="sourceCode scala"><code class="sourceCode scala"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">is</span><span class="op">(</span>ControllerState<span class="op">.</span>idle<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    state <span class="op">:=</span> ControllerState<span class="op">.</span>idle</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">//address holds row right now</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    read_state_counter<span class="op">.</span><span class="fu">reset</span><span class="op">()</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    write_state_counter<span class="op">.</span><span class="fu">reset</span><span class="op">()</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> go_to_active <span class="op">=</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    io<span class="op">.</span>read_start <span class="op">|</span> io<span class="op">.</span>write_start</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">//nop command</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    sdram_commands<span class="op">.</span><span class="fu">NOP</span><span class="op">()</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">//read and write isnt valid</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    io<span class="op">.</span>read_data_valid <span class="op">:=</span> <span class="kw">false</span><span class="op">.</span>B</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    io<span class="op">.</span>write_data_valid <span class="op">:=</span> <span class="kw">false</span><span class="op">.</span>B</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">when</span><span class="op">(</span>refresh_outstanding<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    sdram_commands<span class="op">.</span><span class="fu">Refresh</span><span class="op">()</span></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    refresh_outstanding <span class="op">:=</span> <span class="kw">false</span><span class="op">.</span>B</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">}.</span><span class="fu">elsewhen</span><span class="op">(</span>go_to_active<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    state <span class="op">:=</span> ControllerState<span class="op">.</span>active</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="co">//active command - make this a function</span></span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> row_and_bank <span class="op">=</span> io<span class="op">.</span>read_row_address</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    sdram_commands<span class="op">.</span><span class="fu">Active</span><span class="op">(</span>row_and_bank<span class="op">)</span></span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    cas_counter<span class="op">.</span><span class="fu">reset</span><span class="op">()</span></span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">when</span><span class="op">(</span>io<span class="op">.</span>read_start<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>        started_read <span class="op">:=</span> <span class="kw">true</span><span class="op">.</span>B</span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    <span class="op">}.</span><span class="fu">elsewhen</span><span class="op">(</span>io<span class="op">.</span>write_start<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>        started_write <span class="op">:=</span> <span class="kw">true</span><span class="op">.</span>B</span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  state <span class="op">:=</span> ControllerState<span class="op">.</span>idle</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  read_state_counter<span class="op">.</span><span class="fu">reset</span><span class="op">()</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  write_state_counter<span class="op">.</span><span class="fu">reset</span><span class="op">()</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">val</span> go_to_active <span class="op">=</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  io<span class="op">.</span>read_start <span class="op">|</span> io<span class="op">.</span>write_start</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  sdram_commands<span class="op">.</span><span class="fu">NOP</span><span class="op">()</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  io<span class="op">.</span>read_data_valid <span class="op">:=</span> <span class="kw">false</span><span class="op">.</span>B</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  io<span class="op">.</span>write_data_valid <span class="op">:=</span> <span class="kw">false</span><span class="op">.</span>B</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">when</span><span class="op">(</span>refresh_outstanding<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    sdram_commands<span class="op">.</span><span class="fu">Refresh</span><span class="op">()</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    refresh_outstanding <span class="op">:=</span> <span class="kw">false</span><span class="op">.</span>B</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="op">}.</span><span class="fu">elsewhen</span><span class="op">(</span>go_to_active<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    state <span class="op">:=</span> ControllerState<span class="op">.</span>active</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> row_and_bank <span class="op">=</span> io<span class="op">.</span>read_row_address</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    sdram_commands<span class="op">.</span><span class="fu">Active</span><span class="op">(</span>row_and_bank<span class="op">)</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    cas_counter<span class="op">.</span><span class="fu">reset</span><span class="op">()</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">when</span><span class="op">(</span>io<span class="op">.</span>read_start<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>        started_read <span class="op">:=</span> <span class="kw">true</span><span class="op">.</span>B</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">}.</span><span class="fu">elsewhen</span><span class="op">(</span>io<span class="op">.</span>write_start<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>        started_write <span class="op">:=</span> <span class="kw">true</span><span class="op">.</span>B</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </section>
 <section id="systemverilog-assume-keyword" class="slide level3">
 <h3>SystemVerilog assume keyword</h3>
@@ -338,9 +334,9 @@ class="sourceCode scala"><code class="sourceCode scala"><span id="cb2-1"><a href
 <h3>Including Assumptions</h3>
 <figure>
 <img data-src="img/wave3.png"
-alt="Still Failed! Why is the active to rw counter counter???" />
+alt="Still Failed! Why is the active to rw counter counting???" />
 <figcaption aria-hidden="true">Still Failed! Why is the active to rw
-counter counter???</figcaption>
+counter counting???</figcaption>
 </figure>
 <p>Assumption created new counter-example: active to rw counter can be
 in the middle of counting</p>
@@ -477,8 +473,12 @@ class="sourceCode scala"><code class="sourceCode scala"><span id="cb11-1"><a hre
 <ul>
 <li>Tested 8 different designs for ISSI IS42S81600 and Winbond W9825G6KH
 SDRAM memories</li>
-<li>Changed clock frequency (100 to 200MHz), CAS latency (2 and 3), and
-burst lengths (1 to 8)</li>
+<li>Changed clock frequency, CAS latency (2 and 3), and burst lengths (1
+to 8)
+<ul>
+<li>ISSI clocked at 100MHz for CAS2 and 166MHz for CAS3</li>
+<li>Winbond clocked at 133MHz for CAS2 and 200Mhz for CAS3</li>
+</ul></li>
 <li>All assertions passed after cone of influence was correctly refined
 by assume statements</li>
 <li>Fixed bugs with read and write states not behaving according to spec
@@ -501,6 +501,21 @@ bi-directional ports</li>
 <li>Learning to read counter-examples</li>
 <li>Failing assertions doesn’t necessarily mean your specification is
 wrong</li>
+</ul>
+</section>
+<section id="future-work" class="slide level3">
+<h3>Future Work</h3>
+<ul>
+<li>Support Data Flow
+<ul>
+<li>Bidirectional ports are a Chisel experimental library feature</li>
+<li>Bidirectional ports are also an experimental feature of most Yosys
+tools, outside of synthesis</li>
+</ul></li>
+<li>Different interface support
+<ul>
+<li>AXI is popular with Xilinx IPs</li>
+</ul></li>
 </ul>
 </section></section>
 <section id="calls-for-contributions-and-questions"
