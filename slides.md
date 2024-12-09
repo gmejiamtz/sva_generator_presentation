@@ -5,16 +5,6 @@ subtitle: Formal Verification for SDRAM Controller Generator
 date: December 9, 2024
 ---
 
-## Layout of Presentation
-
-- SDRAM Controller Generator Introduction
-- Finite State Machine Internals and Specification
-- SystemVerilog Assertions
-- SystemVerilog Assertion Generation
-- Results
-- Challenges
-- Future Work
-
 ## SDRAM Controller Generator Introduction
 
 ### Overview
@@ -169,48 +159,6 @@ Assumption created new counter-example: active to rw counter can be in the middl
 - Created “SVA_Modifier” Scala package and class
 - Takes in the same SDRAM Parameter case class used to define all parameters for state machine generation
 - Writes in SV assertions and assumptions with basic file IO
-
----
-
-### Init to Idle Assertion Generator Example
-
-```scala
-def init_to_idle_assertion(): Unit = {
-val lines = Source.fromFile(filePath).getLines().toList
-val cycles_for_init_to_idle = sdram_params.cycles_for_100us + 3
-val block_name = "init_to_idle:\n"
-val assumption1 =
-    s"\tassume property (@(posedge clock) disable iff (reset) (hundred_micro_sec_counter_value == $cycles_for_init_to_idle));\n"
-val main_property =
-    s"\tassert property (@(posedge clock) disable iff (reset) io_state_out == 1 |=> io_state_out == 2);\n"
-val assert_block = block_name.concat(assumption1).concat(main_property)
-val updatedLines = lines :+ assert_block
-Files.write(
-    Paths.get(filePath),
-    updatedLines.mkString("\n").getBytes,
-    StandardOpenOption.TRUNCATE_EXISTING,
-    StandardOpenOption.WRITE
-)
-}
-```
-
----
-
-### Main Program SVA Injection
-
-```scala
-new File("SDRAMController.v").renameTo(new File(sdram_sv_name))
-val sva_mods = new SVA_Modifier(s"$curr_dir/$sdram_sv_name", params)
-sva_mods.begin_formal_block()
-sva_mods.init_to_idle_assertion()
-sva_mods.idle_to_active_assertion()
-sva_mods.active_to_rw_assertion()
-sva_mods.never_reaches_init_after_reset_assert()
-sva_mods.read_to_valid_data_assert()
-sva_mods.read_to_idle_assert()
-sva_mods.write_to_idle_assert()
-sva_mods.end_formal_block()
-```
 
 ## Results and Challenges
 

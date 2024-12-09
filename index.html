@@ -144,19 +144,6 @@ Generator</p>
   <p class="date">December 9, 2024</p>
 </section>
 
-<section id="layout-of-presentation" class="title-slide slide level2">
-<h2>Layout of Presentation</h2>
-<ul>
-<li>SDRAM Controller Generator Introduction</li>
-<li>Finite State Machine Internals and Specification</li>
-<li>SystemVerilog Assertions</li>
-<li>SystemVerilog Assertion Generation</li>
-<li>Results</li>
-<li>Challenges</li>
-<li>Future Work</li>
-</ul>
-</section>
-
 <section>
 <section id="sdram-controller-generator-introduction"
 class="title-slide slide level2">
@@ -355,43 +342,6 @@ generated according to the provided parameters</li>
 parameters for state machine generation</li>
 <li>Writes in SV assertions and assumptions with basic file IO</li>
 </ul>
-</section>
-<section id="init-to-idle-assertion-generator-example"
-class="slide level3">
-<h3>Init to Idle Assertion Generator Example</h3>
-<div class="sourceCode" id="cb3"><pre
-class="sourceCode scala"><code class="sourceCode scala"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> <span class="fu">init_to_idle_assertion</span><span class="op">():</span> <span class="bu">Unit</span> <span class="op">=</span> <span class="op">{</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> lines <span class="op">=</span> <span class="ex">Source</span><span class="op">.</span><span class="fu">fromFile</span><span class="op">(</span>filePath<span class="op">).</span><span class="fu">getLines</span><span class="op">().</span>toList</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> cycles_for_init_to_idle <span class="op">=</span> sdram_params<span class="op">.</span>cycles_for_100us <span class="op">+</span> <span class="dv">3</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> block_name <span class="op">=</span> <span class="st">&quot;init_to_idle:</span><span class="ch">\n</span><span class="st">&quot;</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> assumption1 <span class="op">=</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="ss">s&quot;</span><span class="ch">\t</span><span class="st">assume property (@(posedge clock) disable iff (reset) (hundred_micro_sec_counter_value == </span><span class="ss">$cycles_for_init_to_idle</span><span class="st">));</span><span class="ch">\n</span><span class="ss">&quot;</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> main_property <span class="op">=</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="ss">s&quot;</span><span class="ch">\t</span><span class="st">assert property (@(posedge clock) disable iff (reset) io_state_out == 1 |=&gt; io_state_out == 2);</span><span class="ch">\n</span><span class="ss">&quot;</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> assert_block <span class="op">=</span> block_name<span class="op">.</span><span class="fu">concat</span><span class="op">(</span>assumption1<span class="op">).</span><span class="fu">concat</span><span class="op">(</span>main_property<span class="op">)</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> updatedLines <span class="op">=</span> lines <span class="op">:+</span> assert_block</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>Files<span class="op">.</span><span class="fu">write</span><span class="op">(</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    Paths<span class="op">.</span><span class="fu">get</span><span class="op">(</span>filePath<span class="op">),</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    updatedLines<span class="op">.</span><span class="fu">mkString</span><span class="op">(</span><span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span><span class="op">).</span>getBytes<span class="op">,</span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    StandardOpenOption<span class="op">.</span>TRUNCATE_EXISTING<span class="op">,</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    StandardOpenOption<span class="op">.</span>WRITE</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-</section>
-<section id="main-program-sva-injection" class="slide level3">
-<h3>Main Program SVA Injection</h3>
-<div class="sourceCode" id="cb4"><pre
-class="sourceCode scala"><code class="sourceCode scala"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">new</span> <span class="ex">File</span><span class="op">(</span><span class="st">&quot;SDRAMController.v&quot;</span><span class="op">).</span><span class="fu">renameTo</span><span class="op">(</span><span class="kw">new</span> <span class="ex">File</span><span class="op">(</span>sdram_sv_name<span class="op">))</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> sva_mods <span class="op">=</span> <span class="kw">new</span> <span class="fu">SVA_Modifier</span><span class="op">(</span><span class="ss">s&quot;$curr_dir</span><span class="st">/</span><span class="ss">$sdram_sv_name&quot;</span><span class="op">,</span> params<span class="op">)</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>sva_mods<span class="op">.</span><span class="fu">begin_formal_block</span><span class="op">()</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>sva_mods<span class="op">.</span><span class="fu">init_to_idle_assertion</span><span class="op">()</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>sva_mods<span class="op">.</span><span class="fu">idle_to_active_assertion</span><span class="op">()</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>sva_mods<span class="op">.</span><span class="fu">active_to_rw_assertion</span><span class="op">()</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>sva_mods<span class="op">.</span><span class="fu">never_reaches_init_after_reset_assert</span><span class="op">()</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>sva_mods<span class="op">.</span><span class="fu">read_to_valid_data_assert</span><span class="op">()</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>sva_mods<span class="op">.</span><span class="fu">read_to_idle_assert</span><span class="op">()</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>sva_mods<span class="op">.</span><span class="fu">write_to_idle_assert</span><span class="op">()</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>sva_mods<span class="op">.</span><span class="fu">end_formal_block</span><span class="op">()</span></span></code></pre></div>
 </section></section>
 <section>
 <section id="results-and-challenges" class="title-slide slide level2">
