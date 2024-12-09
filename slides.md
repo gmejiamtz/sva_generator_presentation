@@ -84,7 +84,7 @@ prep -top SDRAMController
 SDRAMController.sv
 ```
 
-## Contructing Assertions
+## Constructing Assertions
 
 ### Active to Read or Write Example
 
@@ -117,23 +117,19 @@ SDRAMController.sv
 
 ```scala
 is(ControllerState.idle) {
-    state := ControllerState.idle
-    //address holds row right now
-    read_state_counter.reset()
-    write_state_counter.reset()
-    val go_to_active =
-    io.read_start | io.write_start
-    //nop command
-    sdram_commands.NOP()
-    //read and write isnt valid
-    io.read_data_valid := false.B
-    io.write_data_valid := false.B
-    when(refresh_outstanding) {
+  state := ControllerState.idle
+  read_state_counter.reset()
+  write_state_counter.reset()
+  val go_to_active =
+  io.read_start | io.write_start
+  sdram_commands.NOP()
+  io.read_data_valid := false.B
+  io.write_data_valid := false.B
+  when(refresh_outstanding) {
     sdram_commands.Refresh()
     refresh_outstanding := false.B
-    }.elsewhen(go_to_active) {
+  }.elsewhen(go_to_active) {
     state := ControllerState.active
-    //active command - make this a function
     val row_and_bank = io.read_row_address
     sdram_commands.Active(row_and_bank)
     cas_counter.reset()
@@ -142,7 +138,7 @@ is(ControllerState.idle) {
     }.elsewhen(io.write_start) {
         started_write := true.B
     }
-    }
+  }
 }
 ```
 
@@ -159,7 +155,7 @@ is(ControllerState.idle) {
 
 ### Including Assumptions
 
-![Still Failed! Why is the active to rw counter counter???](img/wave3.png)
+![Still Failed! Why is the active to rw counter counting???](img/wave3.png)
 
 Assumption created new counter-example: active to rw counter can be in the middle of counting
 
@@ -302,7 +298,9 @@ sva_mods.end_formal_block()
 ### Design Space Exploration
 
 - Tested 8 different designs for ISSI IS42S81600 and Winbond W9825G6KH SDRAM memories
-- Changed clock frequency (100 to 200MHz), CAS latency (2 and 3), and burst lengths (1 to 8)
+- Changed clock frequency, CAS latency (2 and 3), and burst lengths (1 to 8)
+  - ISSI clocked at 100MHz for CAS2 and 166MHz for CAS3
+  - Winbond clocked at 133MHz for CAS2 and 200Mhz for CAS3
 - All assertions passed after cone of influence was correctly refined by assume statements
 - Fixed bugs with read and write states not behaving according to spec
   - Read exited at cas latency being reached, write would only write one item regardless of burst length
@@ -317,6 +315,14 @@ sva_mods.end_formal_block()
 - Licensing
 - Learning to read counter-examples
 - Failing assertions doesn’t necessarily mean your specification is wrong
+
+### Future Work
+
+- Support Data Flow
+  - Bidirectional ports are a Chisel experimental library feature
+  - Bidirectional ports are also an experimental feature of most Yosys tools, outside of synthesis
+- Different interface support
+  - AXI is popular with Xilinx IPs
 
 ## Calls for Contributions and Questions
 
