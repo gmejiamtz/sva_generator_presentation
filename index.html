@@ -406,8 +406,7 @@ class="sourceCode verilog"><code class="sourceCode verilog"><span id="cb8-1"><a 
 <div class="sourceCode" id="cb9"><pre
 class="sourceCode verilog"><code class="sourceCode verilog"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="dv">write_to_idle:</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    assume property <span class="op">(@(</span><span class="kw">posedge</span> clock<span class="op">)</span> <span class="kw">disable</span> iff <span class="op">(</span>reset<span class="op">)</span> <span class="op">(</span>write_state_counter_value <span class="op">==</span> <span class="dv">0</span><span class="op">));</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    assert property <span class="op">(@(</span><span class="kw">posedge</span> clock<span class="op">)</span> <span class="kw">disable</span> iff <span class="op">(</span>reset<span class="op">)</span> <span class="op">(</span>io_state_out <span class="op">==</span> <span class="dv">7</span><span class="op">)</span> <span class="op">|=&gt;</span> #<span class="bn">#8</span> <span class="op">(</span>io_state_out <span class="op">==</span> <span class="dv">2</span><span class="op">)</span> <span class="op">);</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="ot">`endif </span><span class="co">// FORMAL</span></span></code></pre></div>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    assert property <span class="op">(@(</span><span class="kw">posedge</span> clock<span class="op">)</span> <span class="kw">disable</span> iff <span class="op">(</span>reset<span class="op">)</span> <span class="op">(</span>io_state_out <span class="op">==</span> <span class="dv">7</span><span class="op">)</span> <span class="op">|=&gt;</span> #<span class="bn">#8</span> <span class="op">(</span>io_state_out <span class="op">==</span> <span class="dv">2</span><span class="op">)</span> <span class="op">);</span></span></code></pre></div>
 </section></section>
 <section>
 <section id="sv-assertion-generation" class="title-slide slide level2">
@@ -421,8 +420,8 @@ class="slide level3">
 <li>Given this program is a hardware generator, assertions must be
 generated according to the provided parameters</li>
 <li>Created “SVA_Modifier” Scala package and class</li>
-<li>Takes in the same SDRAM Parameter Case used to define all parameters
-for state machine generation</li>
+<li>Takes in the same SDRAM Parameter case class used to define all
+parameters for state machine generation</li>
 <li>Writes in SV assertions and assumptions with basic file IO</li>
 </ul>
 </section>

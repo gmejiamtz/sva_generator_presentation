@@ -239,7 +239,6 @@ read_to_idle:
 write_to_idle:
 	assume property (@(posedge clock) disable iff (reset) (write_state_counter_value == 0));
 	assert property (@(posedge clock) disable iff (reset) (io_state_out == 7) |=> ##8 (io_state_out == 2) );
-`endif // FORMAL
 ```
 
 ## SV Assertion Generation
@@ -248,7 +247,7 @@ write_to_idle:
 
 - Given this program is a hardware generator, assertions must be generated according to the provided parameters
 - Created “SVA_Modifier” Scala package and class
-- Takes in the same SDRAM Parameter Case used to define all parameters for state machine generation
+- Takes in the same SDRAM Parameter case class used to define all parameters for state machine generation
 - Writes in SV assertions and assumptions with basic file IO
 
 ---
